@@ -1,5 +1,5 @@
 # TweetFeed2QRadar
-Fetches logs from https://tweetfeed.live to QRadar
+Fetches logs from [tweetfeed.live](https://tweetfeed.live) to QRadar
 
 Prerequisites
 -------------
@@ -56,7 +56,7 @@ Code Overview
 ### Functions
 
 1.  **fetch_logs()** Fetches logs from the TweetFeed API endpoint: https://api.tweetfeed.live/v1/today.
-2.  **generate_hash(log)** Generates a unique MD5 hash for a log.
+2.  **generate_hash(log)** Generates a unique MD5 hash for a log (thanks [TweetFeed2Splunk](https://github.com/debugactiveprocess/TweetFeed2Splunk/)).
 3.  **get_from_qradar(reference_set_id, log_hash)** Checks if a log's hash exists in a QRadar reference set.
 4.  **send_to_qradar(log_hash, ioc, reference_set_id)** Sends an IOC to QRadar, associating it with the specified reference set.
         
