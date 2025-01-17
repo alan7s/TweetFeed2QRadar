@@ -19,8 +19,8 @@ def generate_hash(log):
     log_str = json.dumps(log, sort_keys=True)
     return hashlib.md5(log_str.encode('utf-8')).hexdigest()
 
-def get_from_qradar(reference_set_id,log_hash):
-    query = f"collection_id={reference_set_id} and source=\"{log_hash}\""
+def get_from_qradar(reference_set_id,origin):
+    query = f"collection_id={reference_set_id} and source=\"{origin}\""
     encoded_query = urllib.parse.quote(query, safe="")
     qradar_url = QRADAR_URL_BASE + '/api/reference_data_collections/set_entries?fields=value&filter=' + encoded_query
     qradar_header = {
@@ -36,7 +36,7 @@ def get_from_qradar(reference_set_id,log_hash):
         print(f"Error: {e}")
         return []
 
-def send_to_qradar(log_hash,ioc,reference_set_id):
+def send_to_qradar(origin,ioc,reference_set_id):
     qradar_url = QRADAR_URL_BASE + '/api/reference_data_collections/set_entries?fields=value&filter=collection_id%3D' + str(reference_set_id)
     qradar_header = {
         'SEC':QRADAR_SEC_TOKEN,
@@ -45,7 +45,7 @@ def send_to_qradar(log_hash,ioc,reference_set_id):
     }
     data = {
         "collection_id": reference_set_id,
-        "source": f"{log_hash}",
+        "source": f"{origin}",
         "value": f"{ioc}"
     }
     try:
@@ -80,11 +80,12 @@ def main():
         log_type = log['type']
         log_hash = generate_hash(log)
         if log_type in reference_set_mapping:
+            origin = log['tweet'] + " log_hash(" + log_hash + ")"
             reference_set = reference_set_mapping[log_type]
-            if get_from_qradar(reference_set,log_hash):
+            if get_from_qradar(reference_set,origin):
                 break           
             else:
-                send_to_qradar(log_hash, log['value'], reference_set)
+                send_to_qradar(origin, log['value'], reference_set)
 
 if __name__ == "__main__":
     main()
