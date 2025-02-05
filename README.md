@@ -73,3 +73,9 @@ crontab -e
 *   Configure the constants correctly before running the script.
        
 *   Tune your QRadar Rules with the Referece Sets you have created.
+
+*   AQL Example:
+```sql
+SELECT URL from events WHERE URL IS NOT NULL AND REFERENCESETCONTAINS('TweetFeed DOMAIN', URL)
+SELECT destinationip from events WHERE REFERENCESETCONTAINS('TweetFeed IP', destinationip)
+```
